@@ -17,7 +17,6 @@ Route::get('/presents', [PresentController::class, 'index']);
 Route::get('/presents-type-ts', [PresentController::class, 'index2']);
 //lekérdezi az összes ajándék típust az ajándékokkal együtt, az ajándék típusok created_at és updated_at mezői, valamint az ajándékok created_at mezői láthatóak
 Route::get('/presents-all-ts', [PresentController::class, 'index3']);
-
 //új ajándék létrehozása
 Route::post('/new-present', [PresentController::class, 'store']);
 
@@ -36,3 +35,4 @@ Route::post('/new-present-type', [PresentTypeController::class, 'store']);
 //angol kommentek, függvények nevei generáltak
 Route::get('/wishes', [ChildPresentController::class, 'index']);
 Route::post('/new-wish', [ChildPresentController::class, 'store']);
+

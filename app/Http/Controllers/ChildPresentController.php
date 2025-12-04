@@ -13,7 +13,7 @@ class ChildPresentController extends Controller
     public function index()
     {
         //lekérdezi az összes gyereket az ajándékaikkal és az ajándék típusokkal együtt
-        $wishes = Child::all()->load(['presents', 'presents.present_type']);
+        $wishes = Child::with(['presents', 'presents.present_type'])->get();
         return response()->json($wishes, 200);
     }
 

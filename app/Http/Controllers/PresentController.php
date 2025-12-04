@@ -11,30 +11,49 @@ class PresentController extends Controller
     public function index(){
         //present_type-ok lekérdezése az ajándékokkal együtt
         //timestamp nem látszik alapértelmezetten, modelben hidden mezőben vannak (kivéve deleted_at a present-ben)
-
-        $present_types = PresentType::all()->load('presents');
+        
+        //AI által javasolt megoldás (mindkettő eager loading, ugyanazt csinálják, csak más szintaxissal):
+        //először jelezzük, hogy a present_type-okhoz tartozó presents-eket is le akarjuk kérdezni, és csak utána hajtjuk végre a lekérdezést
+        $present_types = PresentType::with('presents')->get();
+        //eddig így csináltuk, ez is teljesen jó:
+        //lekérdezzük az összes present_type-ot, majd betöltjük hozzá az ajándékokat
+        //$present_types = PresentType::all()->load('presents');
+        
         //visszaadjuk a választ JSON formátumban, 200-as státusszal
         return response()->json($present_types, 200);
     }
 
     public function index2(){
         //present_type-ok lekérdezése az ajándékokkal együtt, created_at és updated_at mezők láthatóak a típusoknál
-        $present_types = PresentType::all()->makeVisible(['created_at','updated_at'])->load('presents');
+        //$present_types = PresentType::all()->makeVisible(['created_at','updated_at'])->load('presents');
+        //vagy így is lehet:
+        $present_types = PresentType::with('presents')->get()->makeVisible(['created_at','updated_at']);
         return response()->json($present_types, 200);
     }
-    public function index3(){
+    /*public function index3(){
+        //ilyet nem fogunk használni, csak bemutató jelleggel
+
         //present_type-ok lekérdezése az ajándékokkal együtt, created_at és updated_at mezők láthatóak a típusoknál, valamint a created_at mező az ajándékoknál
+
         //először lekérdezzük az összes típust és láthatóvá tesszük a created_at és updated_at mezőket
-        $present_types = PresentType::all()->makeVisible(['updated_at', 'created_at']);
         //típusokhoz tartozó ajándékok betöltése, majd az ajándékok created_at mezőjének láthatóvá tétele closure segítségével
         //closure: névtelen függvény, amit átadunk egy másik függvénynek paraméterként (pl. itt az each-nek), 
         //ami minden egyes elemre alkalmazza a closure-ben definiált műveletet
         //each: egy kollekció minden elemére alkalmaz egy adott műveletet
-        $present_types->each(function($type){
-            $type->presents->makeVisible('created_at');
-        });
+        //órai: ez már kevésbé hatékony, mert lazy loadingot használ, azaz minden egyes típushoz külön lekérdezést hajt végre az ajándékok betöltésére
+        //$present_types = PresentType::all()->makeVisible(['updated_at', 'created_at'])
+        //    ->each(function($type){
+        //        $type->presents->makeVisible('created_at');
+        //});
+        //
+        //eager loading használata closure-rel az ajándékok created_at mezőjének láthatóvá tételéhez
+        $present_types = PresentType::with(['presents' => function($query){
+            $query->get()->makeVisible('created_at');
+        }])->get()->makeVisible(['created_at','updated_at']);
         return response()->json($present_types, 200);
-    }
+    }*/
+
+    
 
     public function store(Request $request){
         //új ajándék létrehozása és validálás

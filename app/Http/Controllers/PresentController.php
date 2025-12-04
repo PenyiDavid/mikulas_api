@@ -10,6 +10,8 @@ class PresentController extends Controller
 {
     public function index(){
         //present_type-ok lekérdezése az ajándékokkal együtt
+        //timestamp nem látszik alapértelmezetten, modelben hidden mezőben vannak (kivéve deleted_at a present-ben)
+
         $present_types = PresentType::all()->load('presents');
         //visszaadjuk a választ JSON formátumban, 200-as státusszal
         return response()->json($present_types, 200);
@@ -17,13 +19,13 @@ class PresentController extends Controller
 
     public function index2(){
         //present_type-ok lekérdezése az ajándékokkal együtt, created_at és updated_at mezők láthatóak a típusoknál
-        $present_types = PresentType::all()->makeVisible('updated_at', 'created_at')->load('presents');
+        $present_types = PresentType::all()->makeVisible(['created_at','updated_at'])->load('presents');
         return response()->json($present_types, 200);
     }
     public function index3(){
         //present_type-ok lekérdezése az ajándékokkal együtt, created_at és updated_at mezők láthatóak a típusoknál, valamint a created_at mező az ajándékoknál
         //először lekérdezzük az összes típust és láthatóvá tesszük a created_at és updated_at mezőket
-        $present_types = PresentType::all()->makeVisible('updated_at', 'created_at');
+        $present_types = PresentType::all()->makeVisible(['updated_at', 'created_at']);
         //típusokhoz tartozó ajándékok betöltése, majd az ajándékok created_at mezőjének láthatóvá tétele closure segítségével
         //closure: névtelen függvény, amit átadunk egy másik függvénynek paraméterként (pl. itt az each-nek), 
         //ami minden egyes elemre alkalmazza a closure-ben definiált műveletet
@@ -46,13 +48,15 @@ class PresentController extends Controller
             'present_type_id' => 'required|exists:present_types,id'
         ],
         [
+            //ezek az általános hibaüzenetek
             'required' => 'A(z) :attribute kitöltése kötelező',
             'string' => 'A(z) :attribute szöveg típusú',
             'exists' => 'A(z) :attribute típus nem létezik' 
         ],
         [
-            'name'=>'Ajándék neve',
-            'present_type_id'=>'Ajándék típus'
+            //ezek kerülnek a hibaüzenetekbe az :attribute helyére
+            'name'=>'ajándék neve',
+            'present_type_id'=>'ajándék típus'
         ]);
 
         //hagyományos létrehozás

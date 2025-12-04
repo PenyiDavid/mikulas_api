@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\ChildController;
+use App\Http\Controllers\ChildPresentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\http\Controllers\PresentController;
+use App\Http\Controllers\PresentTypeController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -23,3 +25,14 @@ Route::post('/new-present', [PresentController::class, 'store']);
 Route::get('/children', [ChildController::class, 'index']);
 //új gyerek létrehozása
 Route::post('/new-child', [ChildController::class, 'store']);
+
+//ajándék típusok lekérdezése
+Route::get('/present-types', [PresentTypeController::class, 'index']);
+//új ajándék típus létrehozása
+Route::post('/new-present-type', [PresentTypeController::class, 'store']);
+
+
+//pivot controller -> php artisan make:controller ChildPresentController --api
+//angol kommentek, függvények nevei generáltak
+Route::get('/wishes', [ChildPresentController::class, 'index']);
+Route::post('/new-wish', [ChildPresentController::class, 'store']);

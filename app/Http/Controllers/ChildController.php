@@ -29,7 +29,7 @@ class ChildController extends Controller
         ]);
 
         $child = Child::create($request->all());
-        return response()->json(['message'=>'Gyerek létrehozva', 'data'=> $child], 201);
+        return response()->json(['message'=>'Gyerek létrehozva', 'data'=> $child], 201, ['Access-Control-Allow-Origin'=>'*'],JSON_UNESCAPED_UNICODE);
     }
 
     public function update(Request $request, $id){

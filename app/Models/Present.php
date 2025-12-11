@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Present extends Model
 {
+    use SoftDeletes;
     protected $fillable = ['name', 'present_type_id'];
 
     protected $hidden = ['created_at', 'updated_at'];

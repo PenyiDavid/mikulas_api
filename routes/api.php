@@ -40,6 +40,7 @@ Route::put('/update/present-type/{id}', [PresentTypeController::class, 'update']
 Route::put('/update/present/{id}', [PresentController::class, 'update']);
 Route::put('/update/child/{id}', [ChildController::class, 'update']);
 Route::put('/update/wish/{child_id}', [ChildPresentController::class, 'update']);
+
 Route::delete('/delete/present-type/{id}', [PresentTypeController::class, 'destroy']);
 Route::delete('/delete/present/{id}', [PresentController::class, 'destroy']);
 Route::delete('/delete/child/{id}', [ChildController::class, 'destroy']);

@@ -36,3 +36,10 @@ Route::post('/new-present-type', [PresentTypeController::class, 'store']);
 Route::get('/wishes', [ChildPresentController::class, 'index']);
 Route::post('/new-wish', [ChildPresentController::class, 'store']);
 
+Route::put('/update-present-type/{id}', [PresentTypeController::class, 'update']);
+Route::put('/update-present/{id}', [PresentController::class, 'update']);
+Route::put('/update-child/{id}', [ChildController::class, 'update']);
+Route::delete('/delete-present-type/{id}', [PresentTypeController::class, 'destroy']);
+Route::delete('/delete-present/{id}', [PresentController::class, 'destroy']);
+Route::delete('/delete-child/{id}', [ChildController::class, 'destroy']);
+

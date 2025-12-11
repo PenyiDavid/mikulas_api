@@ -92,4 +92,37 @@ class PresentController extends Controller
         $present = Present::create($request->all());
         return response()->json(['message'=>'Ajándék létrehozva', 'data'=> $present], 201);
     }
+
+    public function update(Request $request, $id){
+        $present = Present::find($id);
+        if(!$present){
+            return response()->json(['message'=>'Ajándék nem található'], 404);
+        }
+
+        $request->validate([ 
+            'name' => 'sometimes|string',
+            'present_type_id' => 'sometimes|exists:present_types,id'
+        ],
+        [
+            'string' => 'A(z) :attribute szöveg típusú',
+            'exists' => 'A(z) :attribute típus nem létezik' 
+        ],
+        [
+            'name'=>'ajándék neve',
+            'present_type_id'=>'ajándék típus'
+        ]);
+
+        $present->update($request->all());
+        return response()->json(['message'=>'Ajándék frissítve', 'data'=> $present], 200);
+    }
+
+    public function destroy($id){
+        $present = Present::find($id);
+        if(!$present){
+            return response()->json(['message'=>'Ajándék nem található'], 404);
+        }
+
+        $present->delete();
+        return response()->json(['message'=>'Ajándék törölve'], 200);
+    }
 }

@@ -47,19 +47,33 @@ class ChildPresentController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $child_id)
     {
-        //
+        $wish = Child::find($child_id);
+        if(!$wish){
+            return response()->json(['message'=>'Gyerek nem található'], 404);
+        }
+
+        $request->validate([
+            'present_id' => 'required|exists:presents,id',
+            'quantity' => 'required|integer|min:1'
+        ],
+        [
+            'required' => 'A(z) :attribute kitöltése kötelező',
+            'exists' => 'A(z) :attribute nem létezik',
+            'integer' => 'A(z) :attribute egész szám',
+            'min' => 'A(z) :attribute nem lehet kisebb, mint :min'
+        ],
+        [   
+            'present_id'=>'ajándék azonosító',
+            'quantity'=>'mennyiség'
+        ]);
+
+        //frissítjük a pivot tábla rekordját a megadott gyerek és ajándék azonosítóval
+        $wish->presents()->updateExistingPivot($request->present_id, ['quantity'=>$request->quantity]);
+        return response()->json(['message'=>'Kívánság frissítve'], 200);
     }
 
     /**
@@ -67,6 +81,12 @@ class ChildPresentController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $wish = Child::find($id);
+        if(!$wish){
+            return response()->json(['message'=>'Gyerek nem található'], 404);
+        }
+        //töröljük a pivot tábla rekordját a megadott gyerek azonosítóval
+        $wish->presents()->detach();
+        return response()->json(['message'=>'Kívánság törölve'], 200);
     }
 }
